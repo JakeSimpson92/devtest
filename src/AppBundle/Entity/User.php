@@ -9,9 +9,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * User
  *
  * @ORM\Table(name="user")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class User
+class User implements UserInterface, \Serializable
 {
     /**
      * @var string
@@ -36,6 +36,15 @@ class User
      */
     private $id;
 
+    private $isActive;
+
+    public function __construct()
+    {
+        $this->isActive = true;
+        // may not be needed, see section on salt below
+        $this->salt = md5(uniqid('FOaflFaD', true));
+    }
+
     public function getUsername()
     {
         return $this->username;
@@ -50,12 +59,16 @@ class User
     {
         // you *may* need a real salt depending on your encoder
         // see section on salt below
-        return FOaflFaD;
+        return null;
     }
 
     public function getRoles()
     {
         return array('ROLE_USER');
+    }
+
+     public function eraseCredentials()
+    {
     }
 
     public function serialize()
@@ -65,7 +78,7 @@ class User
             $this->username,
             $this->password,
             // see section on salt below
-            // $this->salt,
+            $this->salt,
         ));
     }
 
@@ -77,7 +90,7 @@ class User
             $this->username,
             $this->password,
             // see section on salt below
-            // $this->salt
+            $this->salt
         ) = unserialize($serialized);
     }
 }

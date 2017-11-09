@@ -2,14 +2,14 @@
 # https://symfony.com/doc/current/security.html
 security:
     encoders:
-        AppBundle\Entity\user:
+        AppBundle\Entity\User:
             algorithm: md5
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         our_db_provider:
             entity:
-                class: AppBundle:user
+                class: AppBundle:User
                 property: username
         in_memory:
             memory: ~
